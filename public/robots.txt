@@ -1,0 +1,11 @@
+# Suman Web Design Agency Robots Instructions
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /login
+Disallow: /dashboard
+
+# Sitemaps Location
+Sitemap: https://sumanwebdesign.com/sitemap.xml
+Sitemap: https://sumanwebdesign.com/image-sitemap.xml

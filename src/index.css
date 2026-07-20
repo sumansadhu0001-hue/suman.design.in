@@ -1,0 +1,179 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  
+  --color-brand-primary: #a78bfa; /* Violet/Purple */
+  --color-brand-primary-dark: #7c3aed;
+  --color-brand-accent: #06b6d4; /* Cyan */
+  --color-brand-accent-dark: #0891b2;
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Custom Cursor Rules for high-end Desktop experiences */
+@media (hover: hover) {
+  /* White/Light Theme: Very dark black-violet arrow with fine white stroke, making it highly dark and visible */
+  .theme-light-cursor,
+  .theme-light-cursor * {
+    cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28' fill='%2311052c' stroke='%23ffffff' stroke-width='1.5' stroke-linejoin='round'><path d='M2 2v18l5-5 4.5 9 3-1.5-4.5-9 6.5-1L2 2z' /></svg>") 2 2, default;
+  }
+  
+  .theme-light-cursor a,
+  .theme-light-cursor a *,
+  .theme-light-cursor button,
+  .theme-light-cursor button *,
+  .theme-light-cursor [role='button'],
+  .theme-light-cursor [role='button'] *,
+  .theme-light-cursor select,
+  .theme-light-cursor input[type='submit'],
+  .theme-light-cursor input[type='button'],
+  .theme-light-cursor label {
+    cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28' fill='%231e0b4a' stroke='%23ffffff' stroke-width='1.5' stroke-linejoin='round'><path d='M8.5 11V3.5a1.5 1.5 0 0 1 3 0V11h1a1.5 1.5 0 0 1 3 0v1a1.5 1.5 0 0 1 3 0v2.5a6.5 6.5 0 0 1-13 0V11z' /></svg>") 10 3, pointer;
+  }
+
+  /* Dark Theme: Soft light-lavender/lilac arrow with dark indigo stroke */
+  .theme-dark-cursor,
+  .theme-dark-cursor * {
+    cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28' fill='%23c084fc' stroke='%231e1b4b' stroke-width='1.5' stroke-linejoin='round'><path d='M2 2v18l5-5 4.5 9 3-1.5-4.5-9 6.5-1L2 2z' /></svg>") 2 2, default;
+  }
+  
+  .theme-dark-cursor a,
+  .theme-dark-cursor a *,
+  .theme-dark-cursor button,
+  .theme-dark-cursor button *,
+  .theme-dark-cursor [role='button'],
+  .theme-dark-cursor [role='button'] *,
+  .theme-dark-cursor select,
+  .theme-dark-cursor input[type='submit'],
+  .theme-dark-cursor input[type='button'],
+  .theme-dark-cursor label {
+    cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28' fill='%23d8b4fe' stroke='%231e1b4b' stroke-width='1.5' stroke-linejoin='round'><path d='M8.5 11V3.5a1.5 1.5 0 0 1 3 0V11h1a1.5 1.5 0 0 1 3 0v1a1.5 1.5 0 0 1 3 0v2.5a6.5 6.5 0 0 1-13 0V11z' /></svg>") 10 3, pointer;
+  }
+}
+
+/* Micro interactions and scroll setups */
+html {
+  scroll-behavior: smooth !important;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+body {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom premium scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+.dark ::-webkit-scrollbar-track {
+  background: #090d16;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(167, 139, 250, 0.2);
+  border-radius: 100px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(167, 139, 250, 0.4);
+}
+
+/* Ambient glows and premium noise gradients */
+.noise-bg {
+  background-image: radial-gradient(rgba(167, 139, 250, 0.1) 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
+}
+.dark .noise-bg {
+  background-image: radial-gradient(rgba(167, 139, 250, 0.05) 1.5px, transparent 1.5px);
+}
+
+/* Glassmorphism details */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.dark .glass-panel {
+  background: rgba(9, 13, 22, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+}
+
+.dark .glass-card {
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* High-performance hardware accelerated floating/rotating animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) translateZ(0);
+  }
+  50% {
+    transform: translateY(-12px) translateZ(0);
+  }
+}
+
+@keyframes float-delayed {
+  0%, 100% {
+    transform: translateY(0) translateZ(0);
+  }
+  50% {
+    transform: translateY(8px) translateZ(0);
+  }
+}
+
+@keyframes slow-rotate {
+  0%, 100% {
+    transform: rotate(0deg) translateZ(0);
+  }
+  50% {
+    transform: rotate(15deg) translateZ(0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-float-delayed {
+  animation: float-delayed 5s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-slow-rotate {
+  animation: slow-rotate 4s ease-in-out infinite;
+  will-change: transform;
+}
+
