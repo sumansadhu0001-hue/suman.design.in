@@ -66,12 +66,14 @@ export const handler: Handler = async (event, context) => {
       const parsedData = leadSchema.parse(JSON.parse(body || "{}"));
       let finalLead: any = null;
 
-      let insertObject: any = {
+      const insertObject: any = {
         name: parsedData.name,
+        client_name: parsedData.name,
         email: parsedData.email,
-        phone: parsedData.phone || "",
-        business_name: parsedData.business_name || "",
-        company_size: parsedData.company_size || "",
+        phone: parsedData.phone || null,
+        whatsapp_number: parsedData.phone || "Not Provided",
+        business_name: parsedData.business_name || null,
+        company_size: parsedData.company_size || null,
         project_type: parsedData.project_type || "Custom Website",
         budget: parsedData.budget || "Not Specified",
         timeline: parsedData.timeline || "Flexible",
@@ -82,38 +84,10 @@ export const handler: Handler = async (event, context) => {
         status: "new",
       };
 
-      let { data, error } = await supabaseAdmin
+      const { data, error } = await supabaseAdmin
         .from("leads")
         .insert(insertObject)
         .select();
-
-      if (error && error.message && (error.message.includes("column") || error.message.includes("schema cache") || error.code === "PGRST204" || error.code === "23502")) {
-        console.warn("Standard leads schema insert failed, retrying with alternative (client_name, whatsapp_number) mapping:", error.message);
-        
-        const altInsertObject: any = {
-          client_name: parsedData.name,
-          email: parsedData.email,
-          whatsapp_number: parsedData.phone || "Not Provided",
-          business_name: parsedData.business_name || "",
-          company_size: parsedData.company_size || "",
-          project_type: parsedData.project_type || "Custom Website",
-          budget: parsedData.budget || "Not Specified",
-          timeline: parsedData.timeline || "Flexible",
-          country: parsedData.country || "India",
-          message: parsedData.message || "",
-          source_page: parsedData.source_page || "Contact Page",
-          referral_source: parsedData.referral_source || "Direct",
-          status: "new",
-        };
-
-        const retryResult = await supabaseAdmin
-          .from("leads")
-          .insert(altInsertObject)
-          .select();
-
-        data = retryResult.data;
-        error = retryResult.error;
-      }
 
       if (error) {
         throw error;
