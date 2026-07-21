@@ -29,7 +29,7 @@ export default function FeedbackPopup({ isOpen, onClose, onSubmitSuccess }: Feed
 
     try {
       const selectedEmotion = EMOTIONS.find(e => e.rating === rating);
-      const res = await fetch("/api/feedback", {
+      const res = await fetch("/.netlify/functions/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

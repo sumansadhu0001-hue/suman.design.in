@@ -61,7 +61,7 @@ export default function AdminWorkspace({ activePage, setActivePage }: AdminWorks
 
   const checkDbStatus = async () => {
     try {
-      const r = await fetch("/api/db-status");
+      const r = await fetch("/.netlify/functions/db-status");
       if (r.ok) {
         const d = await r.json();
         if (d && d.status === "error") {
@@ -257,7 +257,7 @@ export default function AdminWorkspace({ activePage, setActivePage }: AdminWorks
     // Fetch data directly from Supabase API endpoints
     const fetchLeads = async () => {
       try {
-        const r = await fetch("/api/leads", { headers });
+        const r = await fetch("/.netlify/functions/leads", { headers });
         if (r.ok) {
           const d = await r.json();
           setLeads(Array.isArray(d) ? d : []);
@@ -269,7 +269,7 @@ export default function AdminWorkspace({ activePage, setActivePage }: AdminWorks
 
     const fetchFeedback = async () => {
       try {
-        const r = await fetch("/api/feedback", { headers });
+        const r = await fetch("/.netlify/functions/feedback", { headers });
         if (r.ok) {
           const d = await r.json();
           setFeedback(Array.isArray(d) ? d : []);
@@ -281,7 +281,7 @@ export default function AdminWorkspace({ activePage, setActivePage }: AdminWorks
 
     const fetchProjects = async () => {
       try {
-        const r = await fetch("/api/projects");
+        const r = await fetch("/.netlify/functions/projects");
         if (r.ok) {
           const d = await r.json();
           setProjects(Array.isArray(d) ? d : []);
@@ -293,7 +293,7 @@ export default function AdminWorkspace({ activePage, setActivePage }: AdminWorks
 
     const fetchSettings = async () => {
       try {
-        const r = await fetch("/api/settings");
+        const r = await fetch("/.netlify/functions/settings");
         if (r.ok) {
           const d = await r.json();
           if (d && d.business_info) setSettings(d);
@@ -305,7 +305,7 @@ export default function AdminWorkspace({ activePage, setActivePage }: AdminWorks
 
     const fetchMedia = async () => {
       try {
-        const r = await fetch("/api/media", { headers });
+        const r = await fetch("/.netlify/functions/media", { headers });
         if (r.ok) {
           const d = await r.json();
           setMedia(Array.isArray(d) ? d : []);
@@ -317,7 +317,7 @@ export default function AdminWorkspace({ activePage, setActivePage }: AdminWorks
 
     const fetchLogs = async () => {
       try {
-        const r = await fetch("/api/admin/logs", { headers });
+        const r = await fetch("/.netlify/functions/admin/logs", { headers });
         if (r.ok) {
           const d = await r.json();
           if (d && d.activity) setLogs(d);
@@ -329,7 +329,7 @@ export default function AdminWorkspace({ activePage, setActivePage }: AdminWorks
 
     const fetchNotifications = async () => {
       try {
-        const r = await fetch("/api/notifications", { headers });
+        const r = await fetch("/.netlify/functions/notifications", { headers });
         if (r.ok) {
           const d = await r.json();
           setNotifications(Array.isArray(d) ? d : []);
@@ -341,7 +341,7 @@ export default function AdminWorkspace({ activePage, setActivePage }: AdminWorks
 
     const fetchStats = async () => {
       try {
-        const r = await fetch("/api/analytics/stats", { headers });
+        const r = await fetch("/.netlify/functions/analytics/stats", { headers });
         if (r.ok) {
           const d = await r.json();
           if (d && d.summary) setStats(d);
@@ -353,7 +353,7 @@ export default function AdminWorkspace({ activePage, setActivePage }: AdminWorks
 
     const fetchLive = async () => {
       try {
-        const r = await fetch("/api/admin/live", { headers });
+        const r = await fetch("/.netlify/functions/admin/live", { headers });
         if (r.ok) {
           const d = await r.json();
           if (d && d.online_count !== undefined) setOnlineCount(d.online_count);
@@ -376,77 +376,59 @@ export default function AdminWorkspace({ activePage, setActivePage }: AdminWorks
     ]);
   };
 
-  // Real-time notifications via WebSocket
+  // Real-time notifications via Supabase Realtime
   useEffect(() => {
     if (!token) return;
 
-    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const wsUrl = `${protocol}//${window.location.host}`;
-    
-    let ws: WebSocket | null = null;
-    let reconnectTimeout: any = null;
+    console.log("Subscribing to real-time lead insertions via Supabase...");
+    const channel = supabase
+      .channel("public-leads-changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "leads",
+        },
+        (payload) => {
+          try {
+            console.log("Real-time lead insertion received:", payload);
+            const newLead = payload.new;
+            if (newLead) {
+              const leadName = newLead.name || newLead.client_name || "N/A";
+              const leadType = newLead.project_type || "Custom Website";
+              const leadBudget = newLead.budget || "Not Specified";
+              
+              // Add notification toast
+              const toastId = Math.random().toString();
+              setActiveToasts(prev => [
+                ...prev,
+                {
+                  id: toastId,
+                  title: "New CRM Inquiry",
+                  message: `Lead from ${leadName} (${leadType}) with budget ${leadBudget}.`,
+                  lead: { ...newLead, name: leadName },
+                  timestamp: new Date()
+                }
+              ]);
 
-    const connect = () => {
-      console.log("Establishing admin websocket connection...");
-      ws = new WebSocket(wsUrl);
+              // Auto refresh all data to sync live UI seamlessly
+              fetchAllData();
 
-      ws.onopen = () => {
-        console.log("WebSocket connection established successfully");
-      };
-
-      ws.onmessage = (event) => {
-        try {
-          const payload = JSON.parse(event.data);
-          if (payload.type === "NEW_LEAD") {
-            const newLead = payload.lead;
-            
-            // Add notification toast
-            const toastId = Math.random().toString();
-            setActiveToasts(prev => [
-              ...prev,
-              {
-                id: toastId,
-                title: "New CRM Inquiry",
-                message: `Lead from ${newLead.name} (${newLead.project_type}) with budget ${newLead.budget}.`,
-                lead: newLead,
-                timestamp: new Date()
-              }
-            ]);
-
-            // Auto refresh all data to sync live UI seamlessly
-            fetchAllData();
-
-            // Auto dismiss toast after 8 seconds
-            setTimeout(() => {
-              setActiveToasts(prev => prev.filter(t => t.id !== toastId));
-            }, 8000);
+              // Auto dismiss toast after 8 seconds
+              setTimeout(() => {
+                setActiveToasts(prev => prev.filter(t => t.id !== toastId));
+              }, 8000);
+            }
+          } catch (err) {
+            console.error("Error processing real-time event:", err);
           }
-        } catch (err) {
-          console.error("Error processing websocket message:", err);
         }
-      };
-
-      ws.onclose = () => {
-        console.log("WebSocket connection closed. Reconnecting in 3 seconds...");
-        reconnectTimeout = setTimeout(connect, 3000);
-      };
-
-      ws.onerror = (err) => {
-        console.error("WebSocket encountered an error:", err);
-        ws?.close();
-      };
-    };
-
-    connect();
+      )
+      .subscribe();
 
     return () => {
-      if (ws) {
-        ws.onclose = null; // Prevent reconnect on unmount
-        ws.close();
-      }
-      if (reconnectTimeout) {
-        clearTimeout(reconnectTimeout);
-      }
+      supabase.removeChannel(channel);
     };
   }, [token]);
 
@@ -847,12 +829,12 @@ function OverviewDashboard({ leads, feedback, projects, stats, onlineCount, hand
         `       • IP Source: Tunnel Ingress`,
         `       • Location: ${city}, ${country}`,
         `       • Client: ${browser} (${os}) • ${device}`,
-        `[POST] Handshaking with /api/analytics/session...`
+        `[POST] Handshaking with /.netlify/functions/analytics/session...`
       ]);
       setSimStep(2);
       await sleep(1000);
 
-      const resSession = await fetch("/api/analytics/session", {
+      const resSession = await fetch("/.netlify/functions/analytics/session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -880,7 +862,7 @@ function OverviewDashboard({ leads, feedback, projects, stats, onlineCount, hand
       setSimStep(3);
       await sleep(1000);
 
-      const viewRes = await fetch("/api/analytics/view", {
+      const viewRes = await fetch("/.netlify/functions/analytics/view", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -907,7 +889,7 @@ function OverviewDashboard({ leads, feedback, projects, stats, onlineCount, hand
       const texts = ["Get Started", "Submit Inquiry", "View Case Study", "Chat on WhatsApp"];
       const elemIdx = Math.floor(Math.random() * elements.length);
 
-      const clickRes = await fetch("/api/analytics/click", {
+      const clickRes = await fetch("/.netlify/functions/analytics/click", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -956,7 +938,7 @@ function OverviewDashboard({ leads, feedback, projects, stats, onlineCount, hand
     const start = performance.now();
     try {
       // Fetch public db status to trigger roundtrip database check
-      const res = await fetch("/api/db-status");
+      const res = await fetch("/.netlify/functions/db-status");
       const end = performance.now();
       if (res.ok) {
         setLatencyMs(Math.round(end - start));
@@ -1464,7 +1446,7 @@ function OverviewDashboard({ leads, feedback, projects, stats, onlineCount, hand
                   isDestructive: true,
                   onConfirm: async () => {
                     try {
-                      const res = await fetch("/api/admin/purge-demo", {
+                      const res = await fetch("/.netlify/functions/admin?action=purge-demo", {
                         method: "POST",
                         headers: { 
                           "Content-Type": "application/json",
@@ -1512,7 +1494,7 @@ function OverviewDashboard({ leads, feedback, projects, stats, onlineCount, hand
                   isDestructive: true,
                   onConfirm: async () => {
                     try {
-                      const res = await fetch("/api/admin/purge-demo", {
+                      const res = await fetch("/.netlify/functions/admin?action=purge-demo", {
                         method: "POST",
                         headers: { 
                           "Content-Type": "application/json",
@@ -1607,7 +1589,7 @@ function LeadsCRM({ leads, fetchLeads, token, customConfirm }: { leads: any[]; f
   const handleUpdateStatus = async (id: string, status: string) => {
     setIsSubmitting(true);
     try {
-      const res = await fetch(`/api/leads/${id}`, {
+      const res = await fetch(`/.netlify/functions/leads?id=${id}`, {
         method: "PUT",
         headers: { 
           "Content-Type": "application/json",
@@ -1636,7 +1618,7 @@ function LeadsCRM({ leads, fetchLeads, token, customConfirm }: { leads: any[]; f
       onConfirm: async () => {
         setIsSubmitting(true);
         try {
-          const res = await fetch(`/api/leads/${id}`, { 
+          const res = await fetch(`/.netlify/functions/leads?id=${id}`, { 
             method: "DELETE",
             headers: {
               "Authorization": `Bearer ${token}`
@@ -1661,7 +1643,7 @@ function LeadsCRM({ leads, fetchLeads, token, customConfirm }: { leads: any[]; f
     // Custom notes are updated locally or synchronized
     try {
       // For resilience we log notes activity or patch
-      const res = await fetch(`/api/leads/${selectedLead.id}`, {
+      const res = await fetch(`/.netlify/functions/leads?id=${selectedLead.id}`, {
         method: "PUT",
         headers: { 
           "Content-Type": "application/json",
@@ -1922,7 +1904,7 @@ function ProjectsCMS({ projects, fetchProjects, token, customConfirm }: { projec
       onConfirm: async () => {
         setIsSubmitting(true);
         try {
-          const res = await fetch(`/api/projects/${id}`, { 
+          const res = await fetch(`/.netlify/functions/projects?id=${id}`, { 
             method: "DELETE",
             headers: {
               "Authorization": `Bearer ${token}`
@@ -1952,7 +1934,7 @@ function ProjectsCMS({ projects, fetchProjects, token, customConfirm }: { projec
     };
 
     try {
-      const url = isEditing.isNew ? "/api/projects" : `/api/projects/${isEditing.id}`;
+      const url = isEditing.isNew ? "/.netlify/functions/projects" : `/.netlify/functions/projects?id=${isEditing.id}`;
       const method = isEditing.isNew ? "POST" : "PUT";
       const res = await fetch(url, {
         method,
@@ -2220,7 +2202,7 @@ function FeedbackHub({ feedback, fetchFeedback, token, customConfirm }: { feedba
       isDestructive: true,
       onConfirm: async () => {
         try {
-          const res = await fetch(`/api/feedback/${id}`, { 
+          const res = await fetch(`/.netlify/functions/feedback?id=${id}`, { 
             method: "DELETE",
             headers: {
               "Authorization": `Bearer ${token}`
@@ -2342,7 +2324,7 @@ function MediaLibrary({ media, fetchMedia, token, customConfirm }: { media: any[
       const reader = new FileReader();
       reader.onload = async () => {
         const base64Data = (reader.result as string).split(",")[1];
-        const res = await fetch("/api/media/upload", {
+        const res = await fetch("/.netlify/functions/media", {
           method: "POST",
           headers: { 
             "Content-Type": "application/json",
@@ -2383,7 +2365,7 @@ function MediaLibrary({ media, fetchMedia, token, customConfirm }: { media: any[
       isDestructive: true,
       onConfirm: async () => {
         try {
-          const res = await fetch(`/api/media/${id}`, { 
+          const res = await fetch(`/.netlify/functions/media?id=${id}`, { 
             method: "DELETE",
             headers: {
               "Authorization": `Bearer ${token}`
@@ -2779,7 +2761,7 @@ function WebSettings({ settings, fetchSettings, token, customConfirm }: { settin
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const res = await fetch("/api/settings", {
+      const res = await fetch("/.netlify/functions/settings", {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
@@ -2807,7 +2789,7 @@ function WebSettings({ settings, fetchSettings, token, customConfirm }: { settin
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const res = await fetch("/api/settings", {
+      const res = await fetch("/.netlify/functions/settings", {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",

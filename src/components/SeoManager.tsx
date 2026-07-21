@@ -59,7 +59,7 @@ export default function SeoManager({ token, customConfirm }: SeoManagerProps) {
   const fetchSeoSettings = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch("/api/settings");
+      const res = await fetch("/.netlify/functions/settings");
       if (res.ok) {
         const data = await res.json();
         if (data.seo_global) setGlobalSeo(data.seo_global);
@@ -84,7 +84,7 @@ export default function SeoManager({ token, customConfirm }: SeoManagerProps) {
   const saveKey = async (key: string, value: any) => {
     setIsSaving(true);
     try {
-      const res = await fetch("/api/settings", {
+      const res = await fetch("/.netlify/functions/settings", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

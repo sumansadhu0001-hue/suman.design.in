@@ -38,7 +38,7 @@ export default function VisitorAnalytics() {
         const utm_campaign = urlParams.get("utm_campaign") || "";
 
         // Send session initialization
-        const res = await fetch("/api/analytics/session", {
+        const res = await fetch("/.netlify/functions/analytics/session", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -83,7 +83,7 @@ export default function VisitorAnalytics() {
       const title = document.title;
       
       try {
-        await fetch("/api/analytics/view", {
+        await fetch("/.netlify/functions/analytics/view", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -164,7 +164,7 @@ export default function VisitorAnalytics() {
       const element_class = target.className || "";
       const text = target.innerText?.substring(0, 50).trim() || "";
 
-      fetch("/api/analytics/click", {
+      fetch("/.netlify/functions/analytics/click", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -199,7 +199,7 @@ export default function Contact() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("/api/leads", {
+      const response = await fetch("/.netlify/functions/leads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

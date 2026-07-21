@@ -18,7 +18,7 @@ export default function Work() {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const res = await fetch("/api/projects");
+        const res = await fetch("/.netlify/functions/projects");
         if (res.ok) {
           const data = await res.json();
           if (Array.isArray(data) && data.length > 0) {
