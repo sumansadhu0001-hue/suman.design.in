@@ -340,7 +340,7 @@ export default function Chatbot() {
       <motion.button
         id="chatbot-trigger-btn"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 flex items-center justify-center shadow-2xl cursor-pointer hover:scale-105 active:scale-95 transition-transform duration-200 border border-zinc-200/20 dark:border-zinc-800/20 relative group"
+        className="w-13 h-13 sm:w-14 sm:h-14 rounded-full bg-violet-600 hover:bg-violet-700 text-white flex items-center justify-center shadow-xl shadow-violet-600/35 cursor-pointer hover:scale-105 active:scale-95 transition-all duration-200 border border-violet-400/30 dark:border-violet-500/40 relative group"
         whileHover={{ rotate: isOpen ? -90 : 8 }}
       >
         <AnimatePresence mode="wait">
@@ -348,11 +348,11 @@ export default function Chatbot() {
             <X key="close" className="w-5 h-5 sm:w-6 sm:h-6" />
           ) : (
             <div key="open" className="relative flex items-center justify-center">
-              <MessageSquare className="w-5 h-5 sm:w-6 sm:h-6" />
+              <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               {/* Premium Glow ring */}
-              <span className="absolute -inset-1 rounded-full bg-violet-500/20 dark:bg-violet-400/20 animate-ping opacity-75 pointer-events-none" />
+              <span className="absolute -inset-1 rounded-full bg-violet-400/30 animate-ping opacity-75 pointer-events-none" />
               {/* Mini AI Indicator dot */}
-              <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-violet-500 border border-white dark:border-zinc-950" />
+              <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-violet-700" />
             </div>
           )}
         </AnimatePresence>

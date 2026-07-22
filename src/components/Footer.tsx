@@ -37,17 +37,22 @@ export default function Footer({ setActivePage }: FooterProps) {
                 e.preventDefault();
                 handlePageNavigate("home");
               }}
-              className="text-2xl font-display font-bold tracking-tight text-zinc-900 dark:text-white"
+              className="inline-flex items-center gap-2.5 text-2xl font-display font-bold tracking-tight text-zinc-900 dark:text-white group"
             >
-              Suman<span className="text-violet-500 font-medium">.design</span>
+              <img 
+                src="/favicon.svg" 
+                alt="Suman.design logo" 
+                className="w-8 h-8 rounded-lg object-contain transition-transform duration-200 group-hover:scale-105" 
+              />
+              <span>Suman<span className="text-violet-500 font-medium">.design</span></span>
             </a>
             <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-sm">
               High-performance, visual-first digital architecture engineered with technical precision. Handcrafted in India.
             </p>
             
             {/* Status indicator */}
-            <div className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-450 text-xs font-semibold border border-emerald-500/10">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+            <div className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-violet-500/10 text-violet-700 dark:text-violet-300 text-xs font-semibold border border-violet-500/20 shadow-sm">
+              <span className="w-2.5 h-2.5 rounded-full bg-violet-500 animate-pulse" />
               <span>Available for New Projects</span>
             </div>
           </div>

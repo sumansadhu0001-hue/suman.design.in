@@ -14,6 +14,9 @@ import Chatbot from "./components/Chatbot";
 import Testimonials from "./components/Testimonials";
 import AdminWorkspace from "./components/AdminWorkspace";
 import VisitorAnalytics from "./components/VisitorAnalytics";
+import CommandPalette from "./components/CommandPalette";
+import BlueprintOverlay from "./components/BlueprintOverlay";
+import { PerspectiveProvider } from "./context/PerspectiveContext";
 
 const METADATA_MAP: Record<string, { title: string; description: string; keywords: string }> = {
   home: {
@@ -174,6 +177,26 @@ export default function App() {
     };
   }, []);
 
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  const [isBlueprintActive, setIsBlueprintActive] = useState(false);
+  const [accentColor, setAccentColor] = useState("violet");
+
+  useEffect(() => {
+    const handleOpenCmd = () => setIsCommandPaletteOpen(true);
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setIsCommandPaletteOpen(prev => !prev);
+      }
+    };
+    window.addEventListener("open-command-palette", handleOpenCmd);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("open-command-palette", handleOpenCmd);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   const toggleTheme = () => {
     setTheme(prev => (prev === "dark" ? "light" : "dark"));
   };
@@ -205,61 +228,82 @@ export default function App() {
   }
 
   return (
-    <div
-      id="app-root-container"
-      className="min-h-screen text-[#1d1d1f] dark:text-[#f5f5f7] bg-[#f5f5f7] dark:bg-[#09090b] transition-colors duration-300 overflow-x-hidden selection:bg-violet-500 selection:text-white flex flex-col justify-between"
-    >
-      {/* Dynamic SEO Document Titles & Meta Descriptions */}
-      <Helmet 
-        title={currentMetadata.title} 
-        description={currentMetadata.description} 
-        keywords={currentMetadata.keywords} 
-        activePage={activePage}
-      />
+    <PerspectiveProvider>
+      <div
+        id="app-root-container"
+        className="min-h-screen text-[#1d1d1f] dark:text-[#f5f5f7] bg-[#f5f5f7] dark:bg-[#09090b] transition-colors duration-300 overflow-x-hidden selection:bg-violet-500 selection:text-white flex flex-col justify-between"
+      >
+        {/* Dynamic SEO Document Titles & Meta Descriptions */}
+        <Helmet 
+          title={currentMetadata.title} 
+          description={currentMetadata.description} 
+          keywords={currentMetadata.keywords} 
+          activePage={activePage}
+        />
 
-      {/* Visitor analytics engine handles all database session logs & feedback */}
-      <VisitorAnalytics />
+        {/* Visitor analytics engine handles all database session logs & feedback */}
+        <VisitorAnalytics />
 
-      <div>
-        {/* Decorative Grid overlay on top of body */}
-        <div className="fixed inset-0 pointer-events-none noise-bg opacity-40 z-0" />
+        <div>
+          {/* Decorative Grid overlay on top of body */}
+          <div className="fixed inset-0 pointer-events-none noise-bg opacity-40 z-0" />
 
-        {/* Main navigation Header */}
-        <Navbar theme={theme} toggleTheme={toggleTheme} activePage={activePage} setActivePage={setActivePage} />
+          {/* Main navigation Header */}
+          <Navbar theme={theme} toggleTheme={toggleTheme} activePage={activePage} setActivePage={setActivePage} />
 
-        {/* Main content body sections with separate page views and smooth transitions */}
-        <main className="relative z-10 pt-16 sm:pt-20 min-h-[75vh]">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activePage}
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
-              transition={{ duration: 0.22, ease: "easeInOut" }}
-            >
-              {activePage === "home" && (
-                <>
+          {/* Main content body sections with separate page views and smooth transitions */}
+          <main className="relative z-10 pt-16 sm:pt-20 min-h-[75vh]">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activePage}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -15 }}
+                transition={{ duration: 0.22, ease: "easeInOut" }}
+              >
+                {activePage === "home" && (
                   <Hero setActivePage={setActivePage} />
-                  <Testimonials />
-                </>
-              )}
-              {activePage === "services" && <Services />}
-              {activePage === "work" && <Work />}
-              {activePage === "pricing" && <Pricing setActivePage={setActivePage} />}
-              {activePage === "contact" && <Contact />}
-              {(activePage === "privacy" || activePage === "cookie" || activePage === "refund") && (
-                <Legal policy={activePage} setActivePage={setActivePage} />
-              )}
-            </motion.div>
-          </AnimatePresence>
-        </main>
+                )}
+                {activePage === "services" && <Services />}
+                {activePage === "work" && <Work />}
+                {activePage === "pricing" && <Pricing setActivePage={setActivePage} />}
+                {activePage === "contact" && <Contact />}
+                {(activePage === "privacy" || activePage === "cookie" || activePage === "refund") && (
+                  <Legal policy={activePage} setActivePage={setActivePage} />
+                )}
+              </motion.div>
+            </AnimatePresence>
+          </main>
+        </div>
+
+        {/* Footer information */}
+        <Footer setActivePage={setActivePage} />
+
+        {/* Floating Gemini Chatbot */}
+        <Chatbot />
+
+        {/* Interactive Command Menu Palette (Cmd+K) */}
+        <CommandPalette
+          isOpen={isCommandPaletteOpen}
+          onClose={() => setIsCommandPaletteOpen(false)}
+          setActivePage={(page) => {
+            setActivePage(page);
+            window.location.hash = `#${page}`;
+          }}
+          toggleTheme={toggleTheme}
+          theme={theme}
+          toggleBlueprint={() => setIsBlueprintActive(!isBlueprintActive)}
+          isBlueprintActive={isBlueprintActive}
+          accentColor={accentColor}
+          setAccentColor={setAccentColor}
+        />
+
+        {/* Architecture Wireframe Blueprint Grid Overlay */}
+        <BlueprintOverlay
+          isActive={isBlueprintActive}
+          onClose={() => setIsBlueprintActive(false)}
+        />
       </div>
-
-      {/* Footer information */}
-      <Footer setActivePage={setActivePage} />
-
-      {/* Floating Gemini Chatbot */}
-      <Chatbot />
-    </div>
+    </PerspectiveProvider>
   );
 }

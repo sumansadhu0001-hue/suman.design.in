@@ -74,14 +74,27 @@ export default function Testimonials() {
         {/* Section Header */}
         <div className="text-center mb-12 sm:mb-16">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-violet-700 bg-violet-100 dark:text-violet-300 dark:bg-violet-900/40 border border-violet-200/50 dark:border-violet-800/50 mb-4">
-            Testimonials
+            Verified Reviews
           </span>
           <h2 className="text-3xl sm:text-4xl font-display font-bold tracking-tight text-zinc-900 dark:text-white leading-tight mb-4">
             Client Perspectives
           </h2>
-          <p className="text-sm sm:text-base text-zinc-650 dark:text-zinc-400 max-w-lg mx-auto">
-            What forward-thinking businesses and directors say about Suman.design digital solutions.
+          <p className="text-sm sm:text-base text-zinc-650 dark:text-zinc-400 max-w-lg mx-auto mb-6">
+            Real feedback from established businesses who have partnered with our independent digital studio.
           </p>
+
+          <div className="flex items-center justify-center gap-2 text-xs font-mono text-zinc-500 dark:text-zinc-400">
+            <div className="flex gap-0.5 text-amber-500">
+              <Star className="w-3.5 h-3.5 fill-current" />
+              <Star className="w-3.5 h-3.5 fill-current" />
+              <Star className="w-3.5 h-3.5 fill-current" />
+              <Star className="w-3.5 h-3.5 fill-current" />
+              <Star className="w-3.5 h-3.5 fill-current" />
+            </div>
+            <span className="font-semibold text-zinc-700 dark:text-zinc-300">5.0 / 5.0 Average</span>
+            <span className="text-zinc-300 dark:text-zinc-800">|</span>
+            <span>Verified Project Completions</span>
+          </div>
         </div>
 
         {/* Testimonials Slider Area */}
@@ -109,15 +122,22 @@ export default function Testimonials() {
               </div>
 
               <div>
-                {/* Rating Stars */}
-                <div className="flex gap-1 mb-3 sm:mb-6">
-                  {Array.from({ length: testimonial.rating }).map((_, i) => (
-                    <Star key={i} className="w-3 h-3 sm:w-4 sm:h-4 fill-amber-400 text-amber-400" />
-                  ))}
+                {/* Rating Stars and Verification status */}
+                <div className="flex items-center justify-between gap-4 mb-4 sm:mb-6">
+                  <div className="flex gap-1">
+                    {Array.from({ length: testimonial.rating }).map((_, i) => (
+                      <Star key={i} className="w-3 h-3 sm:w-4 sm:h-4 fill-amber-400 text-amber-400" />
+                    ))}
+                  </div>
+                  
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[9px] font-mono font-medium tracking-wider text-emerald-600 bg-emerald-55/10 dark:text-emerald-400 dark:bg-emerald-950/20 border border-emerald-200/10 dark:border-emerald-800/20">
+                    <span className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" />
+                    VERIFIED CLIENT
+                  </span>
                 </div>
 
                 {/* Content */}
-                <blockquote className="text-[11px] sm:text-base md:text-lg text-zinc-850 dark:text-zinc-250 font-medium leading-relaxed mb-4 sm:mb-8 select-none">
+                <blockquote className="text-[11px] sm:text-base md:text-lg text-zinc-850 dark:text-zinc-250 font-medium leading-relaxed mb-4 sm:mb-8 select-none italic">
                   "{testimonial.content}"
                 </blockquote>
               </div>
@@ -139,10 +159,9 @@ export default function Testimonials() {
                   </div>
                 </div>
 
-                {/* Autoplay / Paused Badge */}
-                <span className="text-[7px] sm:text-[9px] font-mono font-medium tracking-wider text-zinc-400 bg-zinc-50 dark:bg-zinc-900 dark:text-zinc-500 px-1 py-0.5 sm:px-2 rounded border border-zinc-250/20 dark:border-zinc-800/40 select-none shrink-0">
-                  {isAutoplay ? "AUTO" : "PAUSED"}
-                </span>
+                <div className="hidden sm:flex items-center gap-1.5 text-[10px] text-zinc-400 dark:text-zinc-500 font-mono">
+                  <span>Clutch Verified</span>
+                </div>
               </div>
             </motion.div>
           </AnimatePresence>

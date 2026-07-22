@@ -3,6 +3,7 @@ import { Mail, Phone, Instagram, Send, ChevronDown, MessageSquare, Briefcase, Do
 import { motion, AnimatePresence } from "motion/react";
 import SuccessModal from "./SuccessModal";
 import FeedbackPopup from "./FeedbackPopup";
+import { usePerspective } from "../context/PerspectiveContext";
 
 const PROJECT_TYPES = [
   "Landing Page",
@@ -41,6 +42,7 @@ const REFERRAL_SOURCES = [
 ];
 
 export default function Contact() {
+  const { perspective } = usePerspective();
   const [formData, setFormData] = useState({
     name: "",
     company: "",
@@ -659,7 +661,20 @@ export default function Contact() {
                   ) : (
                     <>
                       <Send className="w-4 h-4" />
-                      <span>Submit Project Brief →</span>
+                      <AnimatePresence mode="wait">
+                        <motion.span
+                          key={perspective}
+                          initial={{ opacity: 0, y: 2 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -2 }}
+                          transition={{ duration: 0.15 }}
+                        >
+                          {perspective === "executive" 
+                            ? "Submit Brief & Schedule Call →"
+                            : "Submit Project Parameters →"
+                          }
+                        </motion.span>
+                      </AnimatePresence>
                     </>
                   )}
                 </button>

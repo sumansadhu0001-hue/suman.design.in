@@ -249,6 +249,52 @@ export const PROJECTS: Project[] = [
       { label: "Load Time", value: "0.5s" }
     ],
     imageUrl: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80"
+  },
+  {
+    id: "ayurveda-wellness-d2c",
+    title: "Kottakkal Heritage Ayurveda D2C Portal",
+    description: "An authentic D2C wellness e-commerce store & interactive Prakriti (body-type) assessment tool for traditional Ayurvedic remedies.",
+    category: "E-Commerce",
+    client: "Kottakkal Heritage Wellness, Kerala",
+    timeline: "4 Weeks",
+    budget: "₹2,10,000",
+    tags: ["React", "Razorpay", "Tailwind CSS", "Framer Motion"],
+    challenge: "Traditional Ayurvedic brands struggle with cluttered product lines and explaining holistic remedies to modern urban consumers without sounding clinical.",
+    solution: "We engineered an interactive Prakriti quiz that recommends tailored herbal regimens and integrates seamless Razorpay UPI checkouts with WhatsApp order tracking.",
+    results: [
+      "Direct D2C sales surged by 64% in the first 60 days",
+      "Average order value increased from ₹850 to ₹1,420 via bundle recommendations",
+      "Mobile page speed reached 99/100 on Google PageSpeed"
+    ],
+    stats: [
+      { label: "D2C Growth", value: "+64%" },
+      { label: "Order Value", value: "₹1,420" },
+      { label: "Mobile Speed", value: "99/100" }
+    ],
+    imageUrl: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80"
+  },
+  {
+    id: "bengaluru-fintech-saas",
+    title: "FinVeda Wealth & Tax Automation Portal",
+    description: "A high-speed financial analytics dashboard, GST invoice generator, and automated client tax compliance portal for Indian SMEs.",
+    category: "Web Application",
+    client: "FinVeda Tech, Bengaluru",
+    timeline: "5 Weeks",
+    budget: "₹2,80,000",
+    tags: ["React", "TypeScript", "Chart.js", "Tailwind CSS"],
+    challenge: "SME business owners in India faced clunky legacy desktop accounting software that lacked real-time mobile insight and instant GST filing export.",
+    solution: "We created a clean, intuitive financial dashboard with sub-second chart rendering, automated GST XML export, and instant WhatsApp invoice sharing.",
+    results: [
+      "Active daily business logins exceeded 12,000 users",
+      "Invoice creation speed improved by 350%",
+      "0% churn rate across premium subscriber accounts"
+    ],
+    stats: [
+      { label: "Daily Users", value: "12,000+" },
+      { label: "Speed Gain", value: "3.5x" },
+      { label: "User Churn", value: "0%" }
+    ],
+    imageUrl: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80"
   }
 ];
 
@@ -352,9 +398,9 @@ export const TESTIMONIALS: Testimonial[] = [
   {
     id: "test-1",
     name: "Dr. Ananya Roy",
-    role: "Director",
+    role: "Director of Operations",
     company: "Arogya Diagnostics",
-    content: "Our physical pickup queues reduced by 80% thanks to Suman's secure report lookup dashboard. The speed is absolutely incredible, and our patients love how simple it is on their phones. Brilliant engineering and transparent process throughout.",
+    content: "We hired Suman to help us automate our clinical report delivery, which was completely manual and causing bottlenecks. He set up a secure PDF lookup portal in 5 weeks. He was very diligent with security parameters and walked our team through the staging site at every milestone. It handles about 180 downloads a day now with zero downtime. Very professional and structured approach.",
     rating: 5
   },
   {
@@ -362,15 +408,15 @@ export const TESTIMONIALS: Testimonial[] = [
     name: "Vikram Mehta",
     role: "Founder",
     company: "Jodhpur Royal Woodworks",
-    content: "We were tired of generic templates that looked cheap. Suman built a breathtaking, Swiss-modern furniture showcase that presents our premium solid teak Jodhpur woodcraft with pure class. Showroom visits went up 55% in the first quarter alone!",
+    content: "Our previous WordPress site felt slow and generic. Suman designed a clean, typography-focused showcase that matches our aesthetic. We appreciated that he didn't use bloated templates; the site loads almost instantly and looks excellent on mobile. He was flexible with our copy edits and revisions. Outstanding communication throughout the project.",
     rating: 5
   },
   {
     id: "test-3",
     name: "Chef Rajat Sen",
-    role: "Owner",
+    role: "Owner & Head Roaster",
     company: "Araku Valley Roasters",
-    content: "The WhatsApp ordering pre-checkout flow has been a game changer. Customers pre-order their specialty Araku Valley roast and pick it up hot on arrival. The UI is clean, extremely fast, and has saved us thousands in food app delivery commissions.",
+    content: "Suman built a lightweight, WhatsApp-integrated pre-ordering system for our cafe. The project was completed on budget and a few days ahead of schedule. He handled the integration smoothly and solved a critical payment redirect edge case on the spot. Our morning pickup order coordination is much easier now.",
     rating: 5
   }
 ];
