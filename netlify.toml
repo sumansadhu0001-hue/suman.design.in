@@ -3,6 +3,26 @@
   publish = "dist"
 
 [[redirects]]
+  from = "/sitemap.xml"
+  to = "/sitemap.xml"
+  status = 200
+
+[[redirects]]
+  from = "/sitemap-image.xml"
+  to = "/sitemap-image.xml"
+  status = 200
+
+[[redirects]]
+  from = "/image-sitemap.xml"
+  to = "/image-sitemap.xml"
+  status = 200
+
+[[redirects]]
+  from = "/rss.xml"
+  to = "/rss.xml"
+  status = 200
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
